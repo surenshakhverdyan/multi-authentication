@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { BadRequestException } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { MongoServerError } from 'mongodb';
 
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { SignUpDto } from 'src/auth/dtos/sign-up.dto';
-import { Types } from 'mongoose';
 
 describe('UserService', () => {
   let service: UserService;
