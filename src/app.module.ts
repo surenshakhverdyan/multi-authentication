@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from 'joi';
 
 import { TokenModule } from './common/token/token.module';
+import { CryptoModule } from './common/crypto/crypto.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TokenModule } from './common/token/token.module';
     }),
 
     TokenModule,
+    CryptoModule,
   ],
 })
 export class AppModule {}
