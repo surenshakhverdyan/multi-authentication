@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from 'joi';
 
+import { TokenModule } from './common/token/token.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +23,8 @@ import * as Joi from 'joi';
         dbName: configService.get<string>('MONGODB_DB'),
       }),
     }),
+
+    TokenModule,
   ],
 })
 export class AppModule {}
