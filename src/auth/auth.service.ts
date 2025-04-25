@@ -51,12 +51,14 @@ export class AuthService {
     return this.login(user);
   }
 
-  async signIn(dot: SignInDto): Promise<IUser> {
-    const user = await this.userService.findByEmail(dot.email);
+  async signIn(dto: SignInDto): Promise<IUser> {
+    const user = await this.userService.findByEmail(dto.email);
     if (!user) throw new NotFoundException('User not found');
+    if (!user.password)
+      throw new UnauthorizedException('Try signing in with Google or Apple');
 
     const isPasswordValid = await this.cryptoService.comparePassword(
-      dot.password,
+      dto.password,
       user.password,
     );
     if (!isPasswordValid)
