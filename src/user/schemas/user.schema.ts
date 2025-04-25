@@ -16,6 +16,9 @@ export class User extends Document {
   lastName: string;
 
   @Prop({ required: false })
+  picture: string;
+
+  @Prop({ required: false })
   provider: string;
 
   @Prop({ required: false })
