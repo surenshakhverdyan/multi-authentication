@@ -1,8 +1,15 @@
 {
   "name": "multi-auth",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "NestJS Multi Auth Example",
+  "author": "Suren Hakhverdyan",
+  "keywords": [
+    "nestjs",
+    "multi-auth",
+    "passport",
+    "apple",
+    "google"
+  ],
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
