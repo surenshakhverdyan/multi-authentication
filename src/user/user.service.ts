@@ -16,10 +16,8 @@ export class UserService {
     try {
       return await this.userModel.create(dto);
     } catch (error: unknown) {
-      if (error instanceof MongoServerError) {
-        if (error.code === 11000) {
-          throw new BadRequestException('Email already exists');
-        }
+      if ((error as MongoServerError).code === 11000) {
+        throw new BadRequestException('Email already exists');
       }
       throw new BadRequestException('Error creating user');
     }
