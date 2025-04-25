@@ -15,6 +15,16 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: '.env',
       validationSchema: Joi.object({
         PORT: Joi.number().integer(),
+
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        GOOGLE_CLIENT_SECRET: Joi.string().required(),
+        GOOGLE_CALLBACK_URL: Joi.string().required(),
+
+        APPLE_CLIENT_ID: Joi.string().required(),
+        APPLE_TEAM_ID: Joi.string().required(),
+        APPLE_KEY_ID: Joi.string().required(),
+        APPLE_PRIVATE_KEY_PATH: Joi.string().required(),
+        APPLE_CALLBACK_URL: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
