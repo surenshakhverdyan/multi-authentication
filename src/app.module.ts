@@ -5,6 +5,7 @@ import * as Joi from 'joi';
 
 import { TokenModule } from './common/token/token.module';
 import { CryptoModule } from './common/crypto/crypto.module';
+import { SessionModule } from './common/session/session.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 
@@ -25,6 +26,9 @@ import { AuthModule } from './auth/auth.module';
         APPLE_KEY_ID: Joi.string().required(),
         APPLE_PRIVATE_KEY_PATH: Joi.string().required(),
         APPLE_CALLBACK_URL: Joi.string().required(),
+
+        REDIS_PORT: Joi.number().integer(),
+        SESSION_TTL: Joi.number().integer(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -39,6 +43,7 @@ import { AuthModule } from './auth/auth.module';
 
     TokenModule,
     CryptoModule,
+    SessionModule,
     UserModule,
     AuthModule,
   ],
