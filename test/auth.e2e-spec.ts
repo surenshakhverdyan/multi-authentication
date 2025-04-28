@@ -140,20 +140,17 @@ describe('AuthController (e2e)', () => {
     });
 
     it('should fail if email already exists', async () => {
-      const firstResponse = await request(app.getHttpServer())
-        .post('/auth/sign-up')
-        .send(signUpDto);
+      // First signup
+      await request(app.getHttpServer()).post('/auth/sign-up').send(signUpDto);
 
-      expect(firstResponse.status).toBe(201);
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
+      // Try second signup with same email
       const response = await request(app.getHttpServer())
         .post('/auth/sign-up')
         .send(signUpDto);
 
       expect(response.status).toBe(400);
       expect(response.body.message).toBe('Email already exists');
+      expect(response.body.statusCode).toBe(400);
     });
 
     it('should fail with invalid data', async () => {
