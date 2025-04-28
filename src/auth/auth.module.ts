@@ -11,11 +11,21 @@ import { AppleStrategy } from './providers/strategies/apple.strategy';
 import { RefreshTokenMiddleware } from './middlewares/refresh-token.middleware';
 import { SignOutSingleSessionMiddleware } from './middlewares/sign-out-single-session.middleware';
 import { SignOutAllSessionsMiddleware } from './middlewares/sign-out-all-sessions.middleware';
+import { TwilioModule } from 'src/common/twilio/twilio.module';
+import { PhoneNumberVerificationHelper } from './helpers/phone-number-verification.helper';
+import { AuthWPhoneNumberService } from './auth-w-phone-number.service';
+import { AuthWPhoneNumberController } from './auth-w-phone-number.controller';
 
 @Module({
-  imports: [UserModule, TokenModule, CryptoModule, SessionModule],
-  providers: [AuthService, GoogleStrategy, AppleStrategy],
-  controllers: [AuthController],
+  imports: [UserModule, TokenModule, CryptoModule, SessionModule, TwilioModule],
+  providers: [
+    AuthService,
+    GoogleStrategy,
+    AppleStrategy,
+    PhoneNumberVerificationHelper,
+    AuthWPhoneNumberService,
+  ],
+  controllers: [AuthController, AuthWPhoneNumberController],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

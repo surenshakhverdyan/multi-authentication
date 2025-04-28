@@ -8,6 +8,7 @@ import { CryptoModule } from './common/crypto/crypto.module';
 import { SessionModule } from './common/session/session.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { TwilioModule } from './common/twilio/twilio.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { AuthModule } from './auth/auth.module';
     SessionModule,
     UserModule,
     AuthModule,
+    TwilioModule,
   ],
 })
 export class AppModule {}

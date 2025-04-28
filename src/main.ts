@@ -20,6 +20,10 @@ async function bootstrap() {
     .setDescription('The NestJS API For MultiAuth')
     .setVersion('1.0')
     .addTag('Auth', "Authentication API's")
+    .addTag(
+      'AuthWPhoneNumber',
+      "Authentication API's for phone number verification and sign-in with phone number",
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

@@ -33,6 +33,42 @@ export class SessionService implements OnModuleDestroy {
     return `session:${userId}:*`;
   }
 
+  async createVerificationCode(
+    phoneNumber: string,
+    code: string,
+  ): Promise<void> {
+    try {
+      const key = `verification_code:${phoneNumber}`;
+      await this.redis.set(key, code);
+      await this.redis.expire(key, 300);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to create verification code: ${message}`);
+    }
+  }
+
+  async changeVerificationCode(phoneNumber: string): Promise<void> {
+    try {
+      const key = `verification_code:${phoneNumber}`;
+      await this.redis.set(key, 'verified');
+      await this.redis.expire(key, 600);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to change verification code: ${message}`);
+    }
+  }
+
+  async getVerificationCode(phoneNumber: string): Promise<string | null> {
+    try {
+      const key = `verification_code:${phoneNumber}`;
+      const code = await this.redis.get(key);
+      return code;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to get verification code: ${message}`);
+    }
+  }
+
   async createSession(session: Omit<ISession, 'deviceId'>): Promise<ISession> {
     const deviceId = crypto.randomUUID();
     const fullSession: ISession = {

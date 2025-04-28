@@ -17,14 +17,16 @@ import { User } from 'src/user/schemas/user.schema';
 import { IUser } from 'src/user/interfaces/user.interface';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
+import { PhoneNumberVerificationHelper } from './helpers/phone-number-verification.helper';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    protected readonly userService: UserService,
+    protected readonly cryptoService: CryptoService,
     private readonly tokenService: TokenService,
-    private readonly cryptoService: CryptoService,
     private readonly sessionService: SessionService,
+    private readonly helper: PhoneNumberVerificationHelper,
   ) {}
 
   async googleOauth(
@@ -49,6 +51,11 @@ export class AuthService {
   }
 
   async signUp(dto: SignUpDto, req: Request): Promise<IUser> {
+    if (dto.phoneNumber) {
+      const isVerified = await this.helper.isCodeVerified(dto.phoneNumber);
+      if (!isVerified)
+        throw new UnauthorizedException('Phone number not verified');
+    }
     const hashedPassword = await this.cryptoService.hashPassword(dto.password!);
     const user = await this.userService.create({
       ...dto,
@@ -87,7 +94,7 @@ export class AuthService {
     await this.sessionService.removeAllSessions(userId);
   }
 
-  private async login(user: User, req: Request): Promise<IUser> {
+  protected async login(user: User, req: Request): Promise<IUser> {
     const accessToken = this.tokenService.generateAccessToken({
       sub: user._id as Types.ObjectId,
     });
@@ -107,6 +114,7 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        phoneNumber: user?.phoneNumber,
         picture: user?.picture,
       },
       accessToken,

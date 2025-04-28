@@ -27,10 +27,7 @@ export class UserService {
     return await this.userModel.findOne({ email });
   }
 
-  async findByProviderId(
-    providerId: string,
-    provider: string,
-  ): Promise<User | null> {
-    return await this.userModel.findOne({ providerId, provider });
+  async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
+    return await this.userModel.findOne({ phoneNumber });
   }
 }
