@@ -113,19 +113,17 @@ describe('UserService', () => {
     });
   });
 
-  describe('findByProviderId', () => {
-    const providerId = 'google123';
-    const provider = 'google';
+  describe('findByPhoneNumber', () => {
+    const phoneNumber = '+12345567890';
 
     it('should find a user by provider ID and provider', async () => {
       mockUserModel.findOne.mockResolvedValueOnce(mockUser);
 
-      const result = await service.findByProviderId(providerId, provider);
+      const result = await service.findByPhoneNumber(phoneNumber);
 
       expect(result).toEqual(mockUser);
       expect(mockUserModel.findOne).toHaveBeenCalledWith({
-        providerId,
-        provider,
+        phoneNumber,
       });
       expect(mockUserModel.findOne).toHaveBeenCalledTimes(1);
     });
@@ -133,12 +131,11 @@ describe('UserService', () => {
     it('should return null when user is not found', async () => {
       mockUserModel.findOne.mockResolvedValueOnce(null);
 
-      const result = await service.findByProviderId('nonexistent', 'google');
+      const result = await service.findByPhoneNumber('nonexistent');
 
       expect(result).toBeNull();
       expect(mockUserModel.findOne).toHaveBeenCalledWith({
-        providerId: 'nonexistent',
-        provider: 'google',
+        phoneNumber: 'nonexistent',
       });
     });
   });
