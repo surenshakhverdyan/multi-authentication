@@ -12,7 +12,6 @@ export class PhoneNumberVerificationHelper {
 
   async sendVerificationCode(phoneNumber: string): Promise<void> {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
-    console.log(`${code} ${phoneNumber}`);
     const message = `Your verification code is: ${code}`;
     await this.sessionService.createVerificationCode(phoneNumber, code);
     await this.twilioService.sendSMS(message, phoneNumber);
@@ -21,7 +20,6 @@ export class PhoneNumberVerificationHelper {
   async verifyCode(inputCode: string, phoneNumber: string): Promise<boolean> {
     const actualCode =
       await this.sessionService.getVerificationCode(phoneNumber);
-    console.log(`actualCode: ${actualCode} inputCode: ${inputCode}`);
     if (!actualCode) throw new NotFoundException('Verification code not found');
     const verified = inputCode === actualCode;
     if (verified) {
