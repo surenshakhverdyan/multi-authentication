@@ -17,6 +17,7 @@ interface AuthResponse {
     email: string;
     firstName: string;
     lastName: string;
+    picture?: string;
   };
   accessToken: string;
   refreshToken: string;
@@ -276,13 +277,13 @@ describe('AuthController (e2e)', () => {
     let userId: string;
 
     beforeEach(async () => {
-      const response = await request(app.getHttpServer())
+      const signUpResponse = await request(app.getHttpServer())
         .post('/auth/sign-up')
         .send(mockUser);
 
-      expect(response.status).toBe(201);
+      expect(signUpResponse.status).toBe(201);
 
-      const body = response.body as AuthResponse;
+      const body = signUpResponse.body as AuthResponse;
       accessToken = body.accessToken;
       deviceId = body.deviceId;
 
@@ -290,67 +291,131 @@ describe('AuthController (e2e)', () => {
       const decodedPayload = Buffer.from(base64Payload, 'base64').toString();
       const payload = JSON.parse(decodedPayload) as { sub: string };
       userId = payload.sub;
+
+      const session = await redisClient.hgetall(
+        `session:${userId}:${deviceId}`,
+      );
+      expect(session).toBeDefined();
     });
 
-    describe('/auth/logout/:userId/:deviceId (POST)', () => {
-      it('should successfully logout user', async () => {
+    describe('/auth/sign-out (POST)', () => {
+      it('should successfully sign out from current device', async () => {
         const response = await request(app.getHttpServer())
-          .post(`/auth/logout/${userId}/${deviceId}`)
+          .post('/auth/sign-out')
           .set('Authorization', `Bearer ${accessToken}`)
           .set('x-device-id', deviceId);
 
         expect(response.status).toBe(200);
+
+        const session = await redisClient.hgetall(
+          `session:${userId}:${deviceId}`,
+        );
+        expect(Object.keys(session)).toHaveLength(0);
       });
 
-      it('should fail without access token', async () => {
+      it('should fail without authorization header', async () => {
         const response = await request(app.getHttpServer())
-          .post(`/auth/logout/${userId}/${deviceId}`)
+          .post('/auth/sign-out')
           .set('x-device-id', deviceId);
 
         expect(response.status).toBe(401);
-
-        const body = response.body as ErrorResponse;
-        expect(body.message).toBe('Access token is missing');
+        expect(response.body.message).toBe('Token is missing');
       });
 
-      it('should fail with invalid access token', async () => {
+      it('should fail without device-id header', async () => {
         const response = await request(app.getHttpServer())
-          .post(`/auth/logout/${userId}/${deviceId}`)
-          .set('Authorization', 'Bearer invalid-token')
+          .post('/auth/sign-out')
+          .set('Authorization', `Bearer ${accessToken}`);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('Device ID is missing');
+
+        const session = await redisClient.hgetall(
+          `session:${userId}:${deviceId}`,
+        );
+        expect(session).toBeDefined();
+      });
+
+      it('should fail with invalid token', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/sign-out')
+          .set('Authorization', 'Bearer invalid.token.here')
           .set('x-device-id', deviceId);
 
         expect(response.status).toBe(401);
+      });
+
+      it('should fail with invalid device ID', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/sign-out')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .set('x-device-id', 'invalid-device-id');
+
+        expect(response.status).toBe(200);
+
+        const session = await redisClient.hgetall(
+          `session:${userId}:${deviceId}`,
+        );
+        expect(session).toBeDefined();
       });
     });
 
-    describe('/auth/logout-all/:userId (POST)', () => {
-      it('should successfully logout from all devices', async () => {
+    describe('/auth/sign-out-all (POST)', () => {
+      it('should successfully sign out from all devices', async () => {
+        const secondSignInResponse = await request(app.getHttpServer())
+          .post('/auth/sign-in')
+          .send({
+            email: mockUser.email,
+            password: mockUser.password,
+          });
+
+        const secondSession = secondSignInResponse.body as AuthResponse;
+        expect(secondSession.deviceId).not.toBe(deviceId);
+
+        const firstSession = await redisClient.hgetall(
+          `session:${userId}:${deviceId}`,
+        );
+        const secondSessionData = await redisClient.hgetall(
+          `session:${userId}:${secondSession.deviceId}`,
+        );
+        expect(firstSession).toBeDefined();
+        expect(secondSessionData).toBeDefined();
+
         const response = await request(app.getHttpServer())
-          .post(`/auth/logout-all/${userId}`)
-          .set('Authorization', `Bearer ${accessToken}`)
-          .set('x-device-id', deviceId);
+          .post('/auth/sign-out-all')
+          .set('Authorization', `Bearer ${accessToken}`);
 
         expect(response.status).toBe(200);
+
+        const sessions = await redisClient.keys(`session:${userId}:*`);
+        expect(sessions).toHaveLength(0);
       });
 
-      it('should fail without access token', async () => {
+      it('should fail without authorization header', async () => {
+        const response = await request(app.getHttpServer()).post(
+          '/auth/sign-out-all',
+        );
+
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Token not found');
+
+        const session = await redisClient.hgetall(
+          `session:${userId}:${deviceId}`,
+        );
+        expect(session).toBeDefined();
+      });
+
+      it('should fail with invalid token', async () => {
         const response = await request(app.getHttpServer())
-          .post(`/auth/logout-all/${userId}`)
-          .set('x-device-id', deviceId);
+          .post('/auth/sign-out-all')
+          .set('Authorization', 'Bearer invalid.token.here');
 
         expect(response.status).toBe(401);
 
-        const body = response.body as ErrorResponse;
-        expect(body.message).toBe('Access token is missing');
-      });
-
-      it('should fail with invalid access token', async () => {
-        const response = await request(app.getHttpServer())
-          .post(`/auth/logout-all/${userId}`)
-          .set('Authorization', 'Bearer invalid-token')
-          .set('x-device-id', deviceId);
-
-        expect(response.status).toBe(401);
+        const session = await redisClient.hgetall(
+          `session:${userId}:${deviceId}`,
+        );
+        expect(session).toBeDefined();
       });
     });
   });

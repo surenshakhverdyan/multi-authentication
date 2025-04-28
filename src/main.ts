@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 
@@ -12,6 +13,16 @@ async function bootstrap() {
     origin: configService.get<string>('CORS_ORIGIN'),
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  const config = new DocumentBuilder()
+    .addBearerAuth()
+    .setTitle('NestJS MultiAuth API')
+    .setDescription('The NestJS API For MultiAuth')
+    .setVersion('1.0')
+    .addTag('Auth', "Authentication API's")
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(configService.get<number>('PORT') ?? 3000);
 }

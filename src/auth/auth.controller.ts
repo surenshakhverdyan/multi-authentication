@@ -7,9 +7,9 @@ import {
   Post,
   Req,
   UseGuards,
-  Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiExcludeEndpoint, ApiHeader } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { AuthService } from './auth.service';
@@ -17,9 +17,9 @@ import { IGoogleProfile } from './providers/interfaces/google-profile.interface'
 import { AppleProfile } from './providers/interfaces/apple-profile.interface';
 import { JwtPayload } from 'src/common/token/interfaces/jwt-payload.interface';
 import { IUser } from 'src/user/interfaces/user.interface';
-import { AuthGuard as _AuthGuard } from './guards/auth.guard';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
+import { SignOutDto } from './dtos/sign-out.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +29,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleAuth() {}
 
+  @ApiExcludeEndpoint()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req: Request): Promise<IUser> {
@@ -39,6 +40,7 @@ export class AuthController {
   @UseGuards(AuthGuard('apple'))
   appleAuth() {}
 
+  @ApiExcludeEndpoint()
   @Post('apple/callback')
   @UseGuards(AuthGuard('apple'))
   appleAuthRedirect(@Req() req: Request): Promise<IUser> {
@@ -56,26 +58,32 @@ export class AuthController {
     return this.authService.signIn(dto, req);
   }
 
+  @ApiHeader({
+    name: 'X-Refresh-Token',
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+  })
   @HttpCode(HttpStatus.OK)
   @Post('refresh-token')
   refreshToken(@Body() payload: JwtPayload): { accessToken: string } {
     return this.authService.refreshToken(payload);
   }
 
-  @UseGuards(_AuthGuard)
+  @ApiBearerAuth()
+  @ApiHeader({
+    name: 'X-Device-Id',
+    example: '1ca60df7-6294-4834-bf21-525235e9502a',
+  })
   @HttpCode(HttpStatus.OK)
-  @Post('logout/:userId/:deviceId')
-  async logout(
-    @Param('userId') userId: string,
-    @Param('deviceId') deviceId: string,
-  ): Promise<void> {
-    await this.authService.logout(userId, deviceId);
+  @Post('sign-out')
+  async logout(@Body() dto: SignOutDto): Promise<void> {
+    await this.authService.logout(dto.userId, dto.deviceId);
   }
 
-  @UseGuards(_AuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Post('logout-all/:userId')
-  async logoutAllDevices(@Param('userId') userId: string): Promise<void> {
+  @Post('sign-out-all')
+  async logoutAllDevices(@Body('userId') userId: string): Promise<void> {
     await this.authService.logoutAllDevices(userId);
   }
 }

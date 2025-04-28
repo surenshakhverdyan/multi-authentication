@@ -14,6 +14,7 @@ import { JwtPayload } from '../common/token/interfaces/jwt-payload.interface';
 import { TokenService } from '../common/token/token.service';
 import { SessionService } from '../common/session/session.service';
 import { AuthGuard } from './guards/auth.guard';
+import { SignOutDto } from './dtos/sign-out.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -208,13 +209,18 @@ describe('AuthController', () => {
   });
 
   describe('logout', () => {
-    it('should call authService.logout with userId and deviceId', async () => {
-      const userId = 'testUserId';
-      const deviceId = 'testDeviceId';
+    it('should call authService.logout with SignOutDto', async () => {
+      const signOutDto: SignOutDto = {
+        userId: 'testUserId',
+        deviceId: 'testDeviceId',
+      };
 
-      await controller.logout(userId, deviceId);
+      await controller.logout(signOutDto);
 
-      expect(service.logout).toHaveBeenCalledWith(userId, deviceId);
+      expect(service.logout).toHaveBeenCalledWith(
+        signOutDto.userId,
+        signOutDto.deviceId,
+      );
     });
   });
 

@@ -5,6 +5,7 @@
     "hgetall",
     "hmset",
     "uuidv",
-    "wrongpassword"
+    "wrongpassword",
+    "XVCJ"
   ]
 }
