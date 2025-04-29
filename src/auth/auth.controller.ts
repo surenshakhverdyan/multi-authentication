@@ -20,10 +20,15 @@ import { IUser } from 'src/user/interfaces/user.interface';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignOutDto } from './dtos/sign-out.dto';
+import { SessionService } from 'src/common/session/session.service';
+import { ISession } from 'src/common/session/interfaces/session.interface';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly sessionService: SessionService,
+  ) {}
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -67,6 +72,12 @@ export class AuthController {
   @Post('refresh-token')
   refreshToken(@Body() payload: JwtPayload): { accessToken: string } {
     return this.authService.refreshToken(payload);
+  }
+
+  @ApiBearerAuth()
+  @Get('all-sessions')
+  getAllSessions(@Body('userId') userId: string): Promise<ISession[]> {
+    return this.sessionService.getAllUserSessions(userId);
   }
 
   @ApiBearerAuth()

@@ -32,5 +32,8 @@ export class AuthModule implements NestModule {
     consumer.apply(RefreshTokenMiddleware).forRoutes('auth/refresh-token');
     consumer.apply(SignOutSingleSessionMiddleware).forRoutes('auth/sign-out');
     consumer.apply(SignOutAllSessionsMiddleware).forRoutes('auth/sign-out-all');
+    consumer
+      .apply(SignOutAllSessionsMiddleware)
+      .forRoutes('/auth/all-sessions');
   }
 }
