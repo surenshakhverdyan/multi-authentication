@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { TwilioService } from './twilio.service';
 import { TwilioService as NestTwilioService } from 'nestjs-twilio';
+
+import { TwilioService } from './twilio.service';
 
 describe('TwilioService', () => {
   let service: TwilioService;

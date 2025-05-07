@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { Request, Response } from 'express';
 import { UnauthorizedException } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 import { RefreshTokenMiddleware } from './refresh-token.middleware';
 import { TokenService } from '../../common/token/token.service';

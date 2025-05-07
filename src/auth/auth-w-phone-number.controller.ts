@@ -8,12 +8,12 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
+import { Request } from 'express';
 
 import { PhoneNumberVerificationHelper } from './helpers/phone-number-verification.helper';
 import { SignInByPhoneNumberDto } from './dtos/sign-in-by-phone-number.dto';
 import { IUser } from 'src/user/interfaces/user.interface';
 import { AuthWPhoneNumberService } from './auth-w-phone-number.service';
-import { Request } from 'express';
 
 @Controller('auth')
 export class AuthWPhoneNumberController {

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { Request } from 'express';
 import { PassportModule } from '@nestjs/passport';
+import { Request } from 'express';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
