@@ -1,99 +1,215 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Multi-Authentication NestJS Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust NestJS application demonstrating multiple authentication strategies including OAuth2 (Google, Apple) and phone number verification.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Multiple Authentication Methods:**
+  - OAuth2 with Google
+  - OAuth2 with Apple
+  - Phone number verification via Twilio
+  - Traditional email/password authentication
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Security:**
+  - JWT-based authentication
+  - Session management
+  - Refresh token rotation
+  - Secure password handling with bcrypt
 
-## Project setup
+- **Additional Components:**
+  - Redis-based session storage
+  - MongoDB integration with Mongoose
+  - Input validation with class-validator
+  - API documentation with Swagger
 
-```bash
-$ npm install
-```
+## Project Architecture
 
-## Compile and run the project
+This project follows several architectural patterns and principles:
 
-```bash
-# development
-$ npm run start
+- **SOLID Principles**: The codebase adheres to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion principles.
 
-# watch mode
-$ npm run start:dev
+- **Modular Architecture**: The application is divided into focused modules (auth, user, common) that encapsulate specific functionality.
 
-# production mode
-$ npm run start:prod
-```
+- **Service-Repository Pattern**: Clear separation between business logic (services) and data access layers.
 
-## Run tests
+- **Dependency Injection**: NestJS's powerful DI container is used throughout the application.
 
-```bash
-# unit tests
-$ npm run test
+- **Test-Driven Development (TDD)**: Extensive test coverage with unit tests (.spec files) and E2E tests.
 
-# e2e tests
-$ npm run test:e2e
+- **Domain-Driven Design (DDD) concepts**: The application structure reflects the business domain with clear boundaries.
 
-# test coverage
-$ npm run test:cov
-```
+## Prerequisites
 
-## Deployment
+- Node.js (v16 or later)
+- npm or yarn
+- MongoDB
+- Redis
+- Twilio account for SMS verification
+- OAuth credentials (Google & Apple Developer accounts)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Installation
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+# Clone the repository
+git clone https://github.com/surenshakhverdyan/multi-authentication.git
+
+# Navigate to the project directory
+cd multi-authentication
+
+# Install dependencies
+npm install
+
+# Copy environment variables example file
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+After copying the `.env.example` file to `.env`, you'll need to edit it with your specific configuration values.
 
-## Resources
+## Configuration
 
-Check out a few resources that may come in handy when working with NestJS:
+Edit the `.env` file in the root directory with the following variables:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```env
+# App
+PORT=3000
+CORS_ORIGIN=http://localhost:3000
 
-## Support
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017
+MONGODB_USER=your_mongodb_user
+MONGODB_PASS=your_mongodb_password
+MONGODB_DB=multi_auth
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# JWT
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=15m
 
-## Stay in touch
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_USERNAME=your_redis_username
+REDIS_PASSWORD=your_redis_password
+SESSION_TTL=604800
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# OAuth
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
+
+APPLE_CLIENT_ID=your_apple_client_id
+APPLE_TEAM_ID=your_apple_team_id
+APPLE_CALLBACK_URL=http://localhost:3000/api/auth/apple/callback
+APPLE_KEY_ID=your_apple_key_id
+APPLE_PRIVATE_KEY_PATH=/path/to/your/apple/private/key.p8
+
+# Twilio
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=your_twilio_phone_number
+```
+
+## Running the Application
+
+```bash
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run build
+npm run start:prod
+```
+
+## API Documentation
+
+Once the application is running, you can access the Swagger API documentation at:
+
+```
+http://localhost:3000/api/docs
+```
+
+## Authentication Endpoints
+
+Note: All endpoints are prefixed with `/api`.
+
+### OAuth2 Authentication
+
+- **Google Authentication:**
+  - `GET /api/auth/google` - Initiate Google OAuth2 flow
+  - `GET /api/auth/google/callback` - Handle Google OAuth2 callback
+
+- **Apple Authentication:**
+  - `GET /api/auth/apple` - Initiate Apple OAuth2 flow
+  - `GET /api/auth/apple/callback` - Handle Apple OAuth2 callback
+
+### Phone Number Authentication
+
+- **Phone Verification:**
+  - `POST /api/auth/phone/send-code` - Send verification code to phone number
+  - `POST /api/auth/phone/verify` - Verify phone number with received code
+  - `POST /api/auth/phone/sign-in` - Sign in with verified phone number
+
+### Traditional Authentication
+
+- **Email/Password:**
+  - `POST /api/auth/sign-up` - Register new user
+  - `POST /api/auth/sign-in` - Login with email and password
+  - `POST /api/auth/refresh-token` - Refresh access token
+  - `POST /api/auth/sign-out` - Sign out current session
+  - `POST /api/auth/sign-out-all` - Sign out all user sessions
+
+## Testing
+
+```bash
+# Run unit tests
+npm run test
+
+# Run e2e tests
+npm run test:e2e
+
+# Generate test coverage
+npm run test:cov
+```
+
+## Project Structure
+
+```
+src/
+├── app.module.ts        # Main application module
+├── main.ts              # Application entry point
+├── auth/                # Authentication modules
+│   ├── auth.module.ts   # Main auth module configuration
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   ├── auth-w-phone-number.controller.ts
+│   ├── auth-w-phone-number.service.ts
+│   ├── dtos/           # Data transfer objects
+│   ├── guards/         # Auth guards
+│   ├── helpers/        # Helper functions
+│   ├── middlewares/    # Auth middlewares
+│   └── providers/      # Auth strategies
+├── common/             # Shared modules
+│   ├── crypto/         # Encryption services
+│   ├── session/        # Session management
+│   ├── token/          # JWT token handling
+│   └── twilio/         # Twilio integration
+└── user/               # User module
+    ├── user.module.ts
+    ├── user.service.ts
+    └── schemas/        # MongoDB schemas
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/my-new-feature`
+5. Submit a pull request
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+[MIT](LICENSE)
+
+## Author
+
+Suren Hakhverdyan
