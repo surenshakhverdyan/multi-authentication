@@ -206,10 +206,6 @@ src/
 4. Push to the branch: `git push origin feature/my-new-feature`
 5. Submit a pull request
 
-## License
-
-[MIT](LICENSE)
-
 ## Author
 
 Suren Hakhverdyan
