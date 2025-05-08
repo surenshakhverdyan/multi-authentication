@@ -24,18 +24,10 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.userModel.findOne({ email }).exec();
+    return await this.userModel.findOne({ email });
   }
 
   async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
-    return await this.userModel.findOne({ phoneNumber }).exec();
-  }
-
-  async findByPhoneOrEmail(key: string): Promise<User | null> {
-    return await this.userModel
-      .findOne({
-        $or: [{ email: key }, { phoneNumber: key }],
-      })
-      .exec();
+    return await this.userModel.findOne({ phoneNumber });
   }
 }
